@@ -1,0 +1,24 @@
+html, body {
+  min-height: 100%;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  background: linear-gradient(303.79deg, #F0C3FC -53.74%, #D7BEFC -4.64%, #BCB1FC 40.96%, #A1AEFC 83.05%, #94BDFC 127.47%, #8EC5FC 170.73%) no-repeat;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-black);
+}
+
+#__nuxt {
+  height: 100%;
+}
+
+[v-cloak] {
+	display: none;
+}
