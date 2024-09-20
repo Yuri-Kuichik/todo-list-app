@@ -33,7 +33,6 @@ async function fetch() {
   await globalStore.fetchTodoList()
 }
 
-// const res = await useAsyncData(async () => await fetch()) 
 const res = await useFetch(async () => await fetch())
 </script>
 
