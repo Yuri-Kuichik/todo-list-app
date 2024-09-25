@@ -34,7 +34,7 @@ function startDragging() {
       tag="ul"
     >
       <template #item="{element}">
-        <li class="todo-list__item handle">
+        <li class="todo-list__item">
           <TodoItem :model="element"/>
         </li>
       </template>
@@ -46,6 +46,20 @@ function startDragging() {
 .todo-list {
   flex-grow: 1;
   width: 100%;
+  height: 100px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    background-color: transparent;
+    border-radius: var(--radius);
+    max-height: 80px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(32, 36, 39, 0.1);
+  }
 
   &__content {
     list-style: none;
@@ -54,19 +68,12 @@ function startDragging() {
     gap: 16px;
   }
 
-  &__item {
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-
-  .handle {
-    cursor: grab;
-  }
-
   .ghost {
     opacity: 0.5;
-    background: var(--color-gray);
+  }
+
+  @media (min-width: 768px) {
+    height: 85px;
   }
 }
 

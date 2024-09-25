@@ -14,7 +14,6 @@ export const useGlobalStore = defineStore('global', {
   
   getters: {
     getActiveTasks(state) {
-     
       return !!state.todosCollection.length 
         ? state.todosCollection.filter(item => !item.completed)
         : []
@@ -78,16 +77,16 @@ export const useGlobalStore = defineStore('global', {
       }
     },
 
-    async editTodoItem(id, text) {
+    async editTodoItem(id, data) {
       this.loading = true
       const todoDocRef = doc(db, collectionName, id)
 
       try {
-        await updateDoc(todoDocRef, { text } );
+        await updateDoc(todoDocRef, data );
 
         await this.fetchTodoList()
 
-        return { data: text}
+        // return data
       } catch(error) {
         console.error(error)
         return error
@@ -128,21 +127,6 @@ export const useGlobalStore = defineStore('global', {
       }
     },
 
-    async setTodoCompleted(id) {
-      this.loading = true
-      const todoDocRef = doc(db, collectionName, id)
-
-      try {
-        await updateDoc(todoDocRef, { completed: true });
-
-        await this.fetchTodoList()
-      } catch(error) {
-        console.error(error)
-      } finally {
-        this.loading = false
-      }
-    },
-
     async deleteTodoItem(id) {
       this.loading = true
       const todoDocRef = doc(db, collectionName, id)
@@ -169,7 +153,9 @@ export const useGlobalStore = defineStore('global', {
           }
         })
 
-        await this.fetchTodoList()
+        this.setFilterAll();
+        await this.fetchTodoList();
+        
       } catch(error) {
         console.error(error)
       } finally {
@@ -187,6 +173,10 @@ export const useGlobalStore = defineStore('global', {
             await updateDoc(todoDocRef, { completed: true });
           }
         })
+
+        if (this.isFilterActive) {
+          this.setFilterAll()
+        }
 
         await this.fetchTodoList()
       } catch(error) {

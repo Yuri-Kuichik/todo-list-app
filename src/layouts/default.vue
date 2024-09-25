@@ -21,7 +21,7 @@
 
   &__container {
     position: relative;
-    padding: 12px;
+    padding: 20px 12px;
     margin: 12px auto;
     display: flex;
     flex-direction: column;

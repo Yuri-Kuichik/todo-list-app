@@ -47,6 +47,7 @@ export default defineNuxtConfig({
     ], 
     'nuxt-vuefire', 
     '@nuxtjs/google-fonts',
+    '@vueuse/nuxt',
   ],
   
   vuefire: {

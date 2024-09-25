@@ -29,8 +29,8 @@ function deleteTask() {
   globalStore.deleteTodoItem(props.model.id)
 }
 
-function setTaskCompleted() {
-  globalStore.setTodoCompleted(props.model.id)
+function changeStatus() {
+  globalStore.editTodoItem(props.model.id, { completed: !props.model.completed})
 }
 
 function openModal() {
@@ -46,22 +46,24 @@ function closeModal() {
 async function editTask() {
   if (newText.value === props.model.text) return 
 
-  await globalStore.editTodoItem(props.model.id, newText.value)
+  await globalStore.editTodoItem(props.model.id, { text: newText.value })
   closeModal()
 }
 
 </script>
 
 <template>
-  <div class="todo-item" :class="rootClasses">
-    <p>
-      {{ model.text }}
-    </p>
+  <div class="todo-item" :class="rootClasses"> 
+    <NuxtImg class="todo-item__druggable handle" src="/images/druggable-icon.svg" />
+    
+    <div class="todo-item__left">
+      <SharedElenmentCheckbox :is-completed="model.completed" @click="changeStatus" />
+      <p> {{ model.text }} </p>
+    </div>
 
-    <div>
-      <el-button @click="openModal" type="primary" :icon="Edit" circle />
-      <el-button @click="setTaskCompleted" :disabled="model.completed" type="success" :icon="Check" circle />
-      <el-button @click="deleteTask" type="danger" :icon="Delete" circle />
+    <div class="todo-item__right">
+      <NuxtImg src="/images/edit-icon.svg" @click="openModal" />
+      <NuxtImg src="/images/delete-icon.svg" @click="deleteTask"/>
     </div>
 
     <SharedBoxModal v-if="open" @close="closeModal">
@@ -92,21 +94,63 @@ async function editTask() {
 
 <style lang="scss" scoped>
 .todo-item {
-  padding: 8px;
+  $this: &;
+
+  position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   gap: 8px;
-  background: var(--color-white);
+  padding-right: 8px;
+  padding-left: 24px;
+
+  &:hover {
+    #{ $this }__druggable {
+      opacity: 1;
+    }
+  }
+
+  &__druggable {
+    position: absolute;
+    left: 0;
+    top: calc(50% - 10px);   
+    -webkit-transition: opacity 0.3s;
+    transition: opacity 0.3s;
+
+    &.handle {
+      cursor: grab;
+    }
+  }
+
+  &__left {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1.15;
+  }
+
+  &__right {
+    display: inline-flex;
+    gap: 16px;
+
+    img {
+      cursor: pointer;
+    }
+  }
 
   &_completed {
-    background: var(--el-color-success-light-8);
+    color: var(--text-color-light);
   }
 
   @media (min-width: 768px) {
-    padding: 8px 12px;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    padding: 0;
+
+    &__druggable {
+      left: -22px;
+      opacity: 0;
+    }
   }
 }
 

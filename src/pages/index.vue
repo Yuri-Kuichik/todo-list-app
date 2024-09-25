@@ -3,6 +3,7 @@ import { shallowRef, computed } from 'vue'
 
 const globalStore = useGlobalStore();
 const { todoList, loading } = storeToRefs(globalStore);
+const { isSmallScreen } = useMedia();
 
 const inputText = shallowRef('');
 
@@ -25,8 +26,10 @@ useHead(() => ({
 }));
 
 async function addNewTodo() {
-  await globalStore.addNewTodo(inputText.value)
-  inputText.value = ''
+  if (!!inputText.value) {
+    await globalStore.addNewTodo(inputText.value)
+    inputText.value = ''
+  }
 }
 
 async function fetch() {
@@ -38,7 +41,7 @@ const res = await useFetch(async () => await fetch())
 
 <template>
   <div class="home-page">
-    <div class="home-page__header">
+    <div class="home-page__header home-page__container">
       <NuxtImg
         class="home-page__image" 
         src="/images/todo-list-illustration.png" 
@@ -53,27 +56,31 @@ const res = await useFetch(async () => await fetch())
           @keyup.enter="addNewTodo"
           clearable
         />
-        <el-button 
+        <SharedElementButton 
           v-if="isInputText"
           :class="$style['el-button']"
           @click="addNewTodo" 
           type="primary"
-          size="large"
+          :size="isSmallScreen ? 'm' : 'l'"
           :loading="loading"
           :disabled="loading"
-        >
-          Добавить
-        </el-button>
+          text="Submit"
+        />
       </div>
     </div>
-
-    <div class="home-page__content">
+    <div class="home-page__content home-page__container">
       <SharedLoadingSpinner v-if="loading" class="home-page__spinner" size="l" />
     
       <template v-if="isTodos">
-        <TodoList/>
-        <TodoListActions />
-        <TodoListProgressBar />
+        <TodoList class="home-page__section" />
+
+        <section class="home-page__progress-bar-wrapper home-page__section">
+          <SharedBoxProgressBar completed />
+          <SharedBoxProgressBar />
+        </section>
+
+        <TodoListActions class="home-page__section" />
+        
       </template>
     </div>
 
@@ -95,8 +102,14 @@ const res = await useFetch(async () => await fetch())
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   flex-grow: 1;
   gap: 32px;
+
+  &__container {
+    width: 100%;
+    max-width: 442px;
+  }
 
   &__header {
     display: flex;
@@ -122,15 +135,26 @@ const res = await useFetch(async () => await fetch())
   &__input-wrapper {
     width: 100%;
     display: inline-flex;
-    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    gap: 16px;
+
+    .el-input {
+      flex-grow: 1;
+    }
   }
 
   &__title {
     margin: 0;
     font-size: 24px;
     line-height: 1.2;
+  }
+
+  &__progress-bar-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
   }
 
   &__no-tasks {
@@ -155,6 +179,17 @@ const res = await useFetch(async () => await fetch())
     background: rgba(0, 0, 0, 0.06);
   }
 
+  @media (max-width: 460px) {
+    &__input-wrapper {
+      flex-direction: column;
+    }
+
+    &__progress-bar-wrapper {
+      grid-template-rows: auto auto;
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media (min-width: 768px) {
     gap: 48px;
 
@@ -165,6 +200,15 @@ const res = await useFetch(async () => await fetch())
     &__content {
       gap: 40px;
     }
+
+    &__progress-bar-wrapper {
+      gap: 30px;
+    }
+
+    &__section {
+      padding-right: 20px;
+      padding-left: 22px; 
+    }
   }
 
 }
@@ -173,21 +217,23 @@ const res = await useFetch(async () => await fetch())
 <style lang="scss" module scoped>
 .el-input {
   flex-grow: 1;
-  max-width: 317px;
   --el-input-border-radius: var(--radius);
 
   @media (max-width: 767px) {
     --el-component-size-large: 32px;
   }
+
+  @media (min-width: 768px) {
+    max-width: 317px;
+  }
 }
 
 .el-button {
   --el-border-radius-base: var(--radius);
-  padding-left: 30px;
-  padding-right: 30px;
 
   @media (max-width: 767px) {
     --el-button-size: 32px;
+    width: 100%
   }
 }
 </style>
