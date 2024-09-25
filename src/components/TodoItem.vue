@@ -54,7 +54,7 @@ async function editTask() {
 
 <template>
   <div class="todo-item" :class="rootClasses"> 
-    <NuxtImg class="todo-item__druggable handle" src="/images/druggable-icon.svg" />
+    <NuxtImg width="16" height="16" class="todo-item__druggable handle" src="/images/druggable-icon.svg" />
     
     <div class="todo-item__left">
       <SharedElenmentCheckbox :is-completed="model.completed" @click="changeStatus" />
@@ -62,8 +62,8 @@ async function editTask() {
     </div>
 
     <div class="todo-item__right">
-      <NuxtImg src="/images/edit-icon.svg" @click="openModal" />
-      <NuxtImg src="/images/delete-icon.svg" @click="deleteTask"/>
+      <NuxtImg width="16" height="16" src="/images/edit-icon.svg" @click="openModal" />
+      <NuxtImg width="16" height="16" src="/images/delete-icon.svg" @click="deleteTask"/>
     </div>
 
     <SharedBoxModal v-if="open" @close="closeModal">
