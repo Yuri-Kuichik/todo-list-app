@@ -7,8 +7,7 @@ const { todoList } = storeToRefs(globalStore);
 const dragging = shallowRef(false);
 
 function checkMove(e) {
-  window.console.log("Future index: " + e.draggedContext.futureIndex);
-  console.log(e.draggedContext)
+  // console.log(e.draggedContext)
 }
 
 function startDragging() {

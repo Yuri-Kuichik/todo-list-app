@@ -117,7 +117,6 @@ export const useGlobalStore = defineStore('global', {
 
       try {
         const res = await getDocs(q);
-        console.log('todos: ', res.docs)
 
         this.todoList = res.docs.map(doc => ({ ...doc.data(), ...{id: doc.id} }) )
       } catch(error) {
